@@ -1,0 +1,5 @@
+export PG_HOST=localhost
+export PG_PORT=5432
+export PG_USER=todo
+export PG_DB_NAME=todo
+export PG_PASSWORD=password

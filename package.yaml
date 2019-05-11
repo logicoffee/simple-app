@@ -24,6 +24,8 @@ dependencies:
   - text
   - time
   - aeson
+  - scotty
+  - http-types
   - HDBC-postgresql
   - relational-query-HDBC
   - relational-query

@@ -42,6 +42,8 @@ paths:
             $ref: '#/definitions/Todo'
         400:
           description: invalid request body
+        500:
+          description: insertion failed
   /todos/{id}:
     get:
       produces:
@@ -85,6 +87,8 @@ paths:
           description: invalid request body
         404:
           description: not found
+        500:
+          description: insertion failed
     delete:
       produces:
         - application/json
@@ -101,6 +105,8 @@ paths:
             $ref: '#/definitions/Todo'
         404:
           description: not found
+        500:
+          description: insertion failed
 
 definitions:
   TodoRequest:

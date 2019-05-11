@@ -26,6 +26,7 @@ dependencies:
   - aeson
   - scotty
   - http-types
+  - HDBC
   - HDBC-postgresql
   - relational-query-HDBC
   - relational-query

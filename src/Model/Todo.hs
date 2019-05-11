@@ -6,20 +6,28 @@
 
 module Model.Todo where
 
+import           Control.Exception                    (catch)
 import           Data.Aeson.Types                     (FromJSON, ToJSON)
+import           Data.Functor.ProductIsomorphic.Class ((|$|), (|*|))
 import           Data.Text.Lazy                       (Text)
 import           Data.Time.Calendar                   (Day)
-
-import           Database.HDBC.Query.TH               (defineTableFromDB',
-                                                       makeRelationalRecord)
-import           Database.HDBC.Schema.PostgreSQL      (driverPostgreSQL)
 import           GHC.Generics                         (Generic)
 import           Model.DB                             (connectPG)
+import           Prelude                              hiding (id)
+import           System.IO                            (hPrint, stderr)
 
-import           Data.Functor.ProductIsomorphic.Class ((|$|), (|*|))
+import           Database.HDBC                        (SqlError,
+                                                       withTransaction)
+import           Database.HDBC.Query.TH               (defineTableFromDB',
+                                                       makeRelationalRecord)
+import           Database.HDBC.Record                 (runDelete, runInsert,
+                                                       runKeyUpdate, runQuery')
+import           Database.HDBC.Schema.PostgreSQL      (driverPostgreSQL)
+
 import           Database.Relational.Monad.Class      (wheres)
 import           Database.Relational.Pi               (Pi)
-import           Database.Relational.Projectable      (placeholder, (!), (.=.))
+import           Database.Relational.Projectable      (placeholder, value, (!),
+                                                       (.=.))
 import qualified Database.Relational.Type             as RType
 
 defineTableFromDB'
@@ -32,6 +40,8 @@ defineTableFromDB'
     , ("deadline", [t|Day|])
     ]
     [''Show, ''Generic]
+
+type TodoID = Int
 
 data Todo' = Todo'
     { pTask     :: !Text
@@ -48,19 +58,61 @@ piTodo' = Todo'
 instance ToJSON Todo
 instance FromJSON Todo'
 
-findAll :: RType.Query () Todo
-findAll = RType.relationalQuery todo
+makeTodo :: TodoID -> Todo' -> Todo
+makeTodo tdId td' = Todo tdId (pTask td') (pDeadline td')
 
-findById :: RType.Query Int Todo
-findById = selectTodo
+fetchAll :: IO [Todo]
+fetchAll = do
+    conn <- connectPG
+    withTransaction conn $ \conn' ->
+        runQuery' conn' (RType.relationalQuery todo) ()
+            `catch` \e -> do
+                hPrint stderr (e :: SqlError)
+                return []
 
-create :: RType.Insert Todo'
-create = RType.insert piTodo'
+fetch :: TodoID -> IO (Maybe Todo)
+fetch todoId = do
+    conn <- connectPG
+    todos <- withTransaction conn $ \conn' ->
+        runQuery' conn' selectTodo todoId
+            `catch` \e -> do
+                hPrint stderr (e :: SqlError)
+                return []
+    if null todos
+        then return Nothing
+        else return $ Just $ head todos
 
-update :: RType.KeyUpdate Int Todo
-update = updateTodo
+create :: Todo' -> IO TodoID
+create td' = do
+    conn <- connectPG
+    withTransaction conn $ \conn' -> do
+        cnt <- runInsert conn' (RType.insert piTodo') td'
+            `catch` \e -> do
+                hPrint stderr (e :: SqlError)
+                return 0
+        if cnt == 1
+            -- TODO: ほんとはcurrval取得して返す
+            then return 0
+            else return 1
 
-delete :: RType.Delete Int
-delete = RType.delete $ \rec -> do
-    (ph, _) <- placeholder $ \phRec -> wheres $ rec ! id' .=. phRec
-    return ph
+update :: Todo -> IO Integer
+update td = do
+    conn <- connectPG
+    withTransaction conn $ \conn' ->
+        runKeyUpdate conn' updateTodo td
+            `catch` \e -> do
+                hPrint stderr (e :: SqlError)
+                return 0
+
+delete :: TodoID -> IO Integer
+delete todoId = do
+    conn <- connectPG
+    withTransaction conn $ \conn' ->
+        runDelete conn' (deleteTodoSQL todoId) ()
+            `catch` \e -> do
+                hPrint stderr (e :: SqlError)
+                return 0
+
+deleteTodoSQL :: Int -> RType.Delete ()
+deleteTodoSQL todoId = RType.deleteNoPH $ \rec ->
+    wheres $ rec ! id' .=. value todoId

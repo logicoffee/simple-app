@@ -26,6 +26,8 @@ dependencies:
   - aeson
   - HDBC-postgresql
   - relational-query-HDBC
+  - relational-query
+  - product-isomorphic
 
 library:
   source-dirs: src

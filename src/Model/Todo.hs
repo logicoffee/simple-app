@@ -90,8 +90,8 @@ create td' = do
             `catch` \e -> do
                 hPrint stderr (e :: SqlError)
                 return 0
-        if cnt == 1
             -- TODO: ほんとはcurrval取得して返す
+        if cnt == 0
             then return 0
             else return 1
 

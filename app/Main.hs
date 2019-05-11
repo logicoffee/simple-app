@@ -1,4 +1,7 @@
 module Main where
 
+import           Web.App
+import           Web.Scotty
+
 main :: IO ()
-main = undefined
+main = scotty 3000 app

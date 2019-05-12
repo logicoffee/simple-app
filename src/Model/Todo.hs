@@ -1,13 +1,16 @@
 {-# LANGUAGE DataKinds             #-}
 {-# LANGUAGE DeriveGeneric         #-}
 {-# LANGUAGE FlexibleInstances     #-}
+{-# LANGUAGE LambdaCase            #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE TemplateHaskell       #-}
 
 module Model.Todo where
 
 import           Control.Exception                    (catch)
-import           Data.Aeson.Types                     (FromJSON, ToJSON)
+import           Data.Aeson.TH                        (deriveJSON)
+import           Data.Aeson.Types                     (ToJSON, defaultOptions,
+                                                       fieldLabelModifier)
 import           Data.Functor.ProductIsomorphic.Class ((|$|), (|*|))
 import           Data.Text.Lazy                       (Text)
 import           Data.Time.Calendar                   (Day)
@@ -56,7 +59,15 @@ piTodo' = Todo'
     |*| deadline'
 
 instance ToJSON Todo
-instance FromJSON Todo'
+deriveJSON
+    ( defaultOptions
+        { fieldLabelModifier = \case
+            "pTask"     -> "task"
+            "pDeadline" -> "deadline"
+            x           -> x
+        }
+    )
+    ''Todo'
 
 makeTodo :: TodoID -> Todo' -> Todo
 makeTodo tdId td' = Todo tdId (pTask td') (pDeadline td')

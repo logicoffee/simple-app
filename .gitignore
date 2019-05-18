@@ -1,5 +1,4 @@
-.stack-work/
-todo.cabal
+*/.stack-work/
 *~
 
 # environment file

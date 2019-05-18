@@ -1,6 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Web.Action.Todo where
 
+import           Common.Types.Todo
 import           Control.Monad             (when)
 import           Control.Monad.IO.Class    (liftIO)
 import           Model.Todo

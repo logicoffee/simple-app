@@ -1,0 +1,100 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.31.1.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: 25e06027beec4e1ae1e95ee97953b5a5814d8ff60c656ec6d0768fb88094ed9e
+
+name:           todo
+version:        0.1.0.0
+description:    Please see the README on GitHub at <https://github.com/logicoffee/simple-app#readme>
+homepage:       https://github.com/logicoffee/simple-app#readme
+bug-reports:    https://github.com/logicoffee/simple-app/issues
+author:         Ryo Iketani
+maintainer:     riemann1618@gmail.com
+copyright:      MIT
+license:        BSD3
+build-type:     Simple
+
+source-repository head
+  type: git
+  location: https://github.com/logicoffee/simple-app
+
+library
+  exposed-modules:
+      Model.Todo
+      Web.Action.Before
+      Web.Action.Todo
+      Web.App
+  other-modules:
+      Paths_todo
+  hs-source-dirs:
+      src
+  build-depends:
+      HDBC
+    , HDBC-postgresql
+    , aeson
+    , base >=4.7 && <5
+    , common
+    , db
+    , http-types
+    , names-th
+    , product-isomorphic
+    , relational-query
+    , relational-query-HDBC
+    , scotty
+    , text
+    , time
+  default-language: Haskell2010
+
+executable todo
+  main-is: Main.hs
+  other-modules:
+      Paths_todo
+  hs-source-dirs:
+      app
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N -Wall
+  build-depends:
+      HDBC
+    , HDBC-postgresql
+    , aeson
+    , base >=4.7 && <5
+    , common
+    , db
+    , http-types
+    , names-th
+    , product-isomorphic
+    , relational-query
+    , relational-query-HDBC
+    , scotty
+    , text
+    , time
+    , todo
+  default-language: Haskell2010
+
+test-suite test
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  other-modules:
+      Paths_todo
+  hs-source-dirs:
+      test
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N -Wall
+  build-depends:
+      HDBC
+    , HDBC-postgresql
+    , aeson
+    , base >=4.7 && <5
+    , common
+    , db
+    , http-types
+    , names-th
+    , product-isomorphic
+    , relational-query
+    , relational-query-HDBC
+    , scotty
+    , text
+    , time
+    , todo
+  default-language: Haskell2010

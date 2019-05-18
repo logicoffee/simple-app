@@ -1,14 +1,10 @@
-name:                todo
+name:                front
 version:             0.1.0.0
 github:              "logicoffee/simple-app"
 license:             BSD3
 author:              "Ryo Iketani"
 maintainer:          "riemann1618@gmail.com"
 copyright:           "MIT"
-
-extra-source-files:
-  - README.md
-  - ChangeLog.md
 
 # Metadata used when publishing your package
 # synopsis:            Short description of your package
@@ -21,22 +17,13 @@ description:         Please see the README on GitHub at <https://github.com/logi
 
 dependencies:
   - base >= 4.7 && < 5
-  - text
-  - time
-  - aeson
-  - scotty
-  - http-types
-  - HDBC
-  - HDBC-postgresql
-  - relational-query-HDBC
-  - relational-query
-  - product-isomorphic
+  - common
 
 library:
   source-dirs: src
 
 executables:
-  todo:
+  front:
     main:                Main.hs
     source-dirs:         app
     ghc-options:
@@ -45,7 +32,7 @@ executables:
       - -with-rtsopts=-N
       - -Wall
     dependencies:
-      - todo
+      - front
 
 tests:
   test:
@@ -57,4 +44,4 @@ tests:
       - -with-rtsopts=-N
       - -Wall
     dependencies:
-      - todo
+      - front

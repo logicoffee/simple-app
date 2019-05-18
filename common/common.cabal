@@ -1,0 +1,36 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.31.1.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: 4d2bf95131e413a635cf365b121ec2511b8e4ab16582f06cbc3d3744a60cd357
+
+name:           common
+version:        0.1.0.0
+description:    Please see the README on GitHub at <https://github.com/logicoffee/simple-app#readme>
+homepage:       https://github.com/logicoffee/simple-app#readme
+bug-reports:    https://github.com/logicoffee/simple-app/issues
+author:         Ryo Iketani
+maintainer:     riemann1618@gmail.com
+copyright:      MIT
+license:        BSD3
+build-type:     Simple
+
+source-repository head
+  type: git
+  location: https://github.com/logicoffee/simple-app
+
+library
+  exposed-modules:
+      Common.Types.Todo
+  other-modules:
+      Paths_common
+  hs-source-dirs:
+      src
+  build-depends:
+      aeson
+    , base >=4.7 && <5
+    , text
+    , time
+  default-language: Haskell2010

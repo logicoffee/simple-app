@@ -1,0 +1,34 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.31.1.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: ca7139ed31ef60dc9123f3369fd7d8c1e269185368593978d9552a39383aaf89
+
+name:           db
+version:        0.1.0.0
+description:    Please see the README on GitHub at <https://github.com/logicoffee/simple-app#readme>
+homepage:       https://github.com/logicoffee/simple-app#readme
+bug-reports:    https://github.com/logicoffee/simple-app/issues
+author:         Ryo Iketani
+maintainer:     riemann1618@gmail.com
+copyright:      MIT
+license:        BSD3
+build-type:     Simple
+
+source-repository head
+  type: git
+  location: https://github.com/logicoffee/simple-app
+
+library
+  exposed-modules:
+      Model.DB
+  other-modules:
+      Paths_db
+  hs-source-dirs:
+      src
+  build-depends:
+      HDBC-postgresql
+    , base >=4.7 && <5
+  default-language: Haskell2010

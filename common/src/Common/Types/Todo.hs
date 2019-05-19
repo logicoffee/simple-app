@@ -4,7 +4,8 @@
 module Common.Types.Todo where
 
 import           Data.Aeson         (FromJSON, ToJSON, defaultOptions,
-                                     genericParseJSON, parseJSON)
+                                     genericParseJSON, genericToJSON, parseJSON,
+                                     toJSON)
 import           Data.Aeson.TH      (fieldLabelModifier)
 import           Data.Text.Lazy     (Text)
 import           Data.Time.Calendar (Day)
@@ -24,12 +25,17 @@ data Todo' = Todo'
     } deriving (Generic)
 
 instance ToJSON Todo
+instance FromJSON Todo
+instance ToJSON Todo' where
+    toJSON = genericToJSON jsonOptions
 instance FromJSON Todo' where
-    parseJSON = genericParseJSON defaultOptions
-        { fieldLabelModifier = \case
-            "pTask"     -> "task"
-            "pDeadline" -> "deadline"
-        }
+    parseJSON = genericParseJSON jsonOptions
+
+jsonOptions = defaultOptions
+    { fieldLabelModifier = \case
+        "pTask"     -> "task"
+        "pDeadline" -> "deadline"
+    }
 
 makeTodo :: TodoID -> Todo' -> Todo
 makeTodo tdId td' = Todo tdId (pTask td') (pDeadline td')

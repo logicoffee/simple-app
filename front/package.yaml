@@ -18,6 +18,11 @@ description:         Please see the README on GitHub at <https://github.com/logi
 dependencies:
   - base >= 4.7 && < 5
   - common
+  - bytestring
+  - aeson
+  - http-types
+  - http-client
+  - http-conduit
 
 library:
   source-dirs: src

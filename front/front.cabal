@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: d64c501cf87c3f03aba54db03fa76857661f502deb17d36b6bdb647d2e99c67d
+-- hash: d87c772faddc32718d3bf5a2b7626d54e301d3d207bd489279a4530ccb9c59b4
 
 name:           front
 version:        0.1.0.0
@@ -24,6 +24,7 @@ source-repository head
 library
   exposed-modules:
       API
+      Effect
   other-modules:
       Paths_front
   hs-source-dirs:
@@ -36,6 +37,7 @@ library
     , http-client
     , http-conduit
     , http-types
+    , miso
   default-language: Haskell2010
 
 executable front
@@ -54,6 +56,7 @@ executable front
     , http-client
     , http-conduit
     , http-types
+    , miso
   default-language: Haskell2010
 
 test-suite test
@@ -73,4 +76,5 @@ test-suite test
     , http-client
     , http-conduit
     , http-types
+    , miso
   default-language: Haskell2010

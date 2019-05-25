@@ -10,11 +10,13 @@ import           Web.Scotty
 
 fetchAllTodos :: ActionM ()
 fetchAllTodos = do
+    addDefaultHeaders
     todos <- liftIO fetchAll
     json todos
 
 fetchTodo :: ActionM ()
 fetchTodo = do
+    addDefaultHeaders
     todoId    <- param "todoId"
     maybeTodo <- liftIO $ fetch todoId
     case maybeTodo of
@@ -23,6 +25,7 @@ fetchTodo = do
 
 createTodo :: ActionM ()
 createTodo = do
+    addDefaultHeaders
     td'  <- jsonData :: ActionM Todo'
     tdId <- liftIO $ create td'
     if tdId == 0
@@ -31,6 +34,7 @@ createTodo = do
 
 updateTodo :: ActionM ()
 updateTodo = do
+    addDefaultHeaders
     td <- makeTodo <$> param "todoId" <*> jsonData
     cnt <- liftIO $ update td
     case cnt of
@@ -39,6 +43,7 @@ updateTodo = do
 
 deleteTodo :: ActionM ()
 deleteTodo = do
+    addDefaultHeaders
     todoId <- param "todoId"
     cnt    <- liftIO $ Model.Todo.delete todoId
     case cnt of
@@ -46,3 +51,8 @@ deleteTodo = do
         0 -> status status500
         _ -> status status200
 
+addDefaultHeaders :: ActionM ()
+addDefaultHeaders = do
+    addHeader "Access-Control-Allow-Origin" "*"
+    addHeader "Access-Control-Allow-Methods" "GET, POST, PUT, DELETE, OPTIONS"
+    addHeader "Access-Control-Allow-Headers" "Content-Type"

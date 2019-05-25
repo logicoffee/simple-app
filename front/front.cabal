@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: d87c772faddc32718d3bf5a2b7626d54e301d3d207bd489279a4530ccb9c59b4
+-- hash: ef221872bce81eb86cd604846ed486d4f7496a55cb4ab107c875a93ef5ded351
 
 name:           front
 version:        0.1.0.0
@@ -34,6 +34,7 @@ library
     , base >=4.7 && <5
     , bytestring
     , common
+    , ghcjs-base
     , http-client
     , http-conduit
     , http-types
@@ -53,6 +54,7 @@ executable front
     , bytestring
     , common
     , front
+    , ghcjs-base
     , http-client
     , http-conduit
     , http-types
@@ -73,6 +75,7 @@ test-suite test
     , bytestring
     , common
     , front
+    , ghcjs-base
     , http-client
     , http-conduit
     , http-types

@@ -7,7 +7,7 @@ import           Miso.Effect
 data Model = Model
     { todos       :: [Todo] -- Todo全体
     , draftCreate :: Todo'  -- 新規作成中のTodo
-    }
+    } deriving(Eq)
 
 data Action = FetchTodos
             | DisplayAll [Todo]

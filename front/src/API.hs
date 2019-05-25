@@ -2,74 +2,70 @@
 module API where
 
 import           Common.Types.Todo
-import           Data.Aeson            (encode)
-import           Data.ByteString       (ByteString)
-import           Data.ByteString.Char8 (pack)
-import           Data.Monoid           ((<>))
-import           Network.HTTP.Client
-import           Network.HTTP.Simple
-import           Network.HTTP.Types
-import           Prelude               hiding (id)
+import           Data.Aeson                    (FromJSON, decode)
+import qualified Data.ByteString.Lazy          as LBS
+import qualified Data.JSString                 as JSS
+import           Data.Monoid                   ((<>))
+import           JavaScript.Web.XMLHttpRequest
+import           Prelude                       hiding (id)
 
-defaultHost = "localhost" :: ByteString
-defaultPort = 3000        :: Int
-baseURL     = "/todos"    :: ByteString
-memberURL :: TodoID -> ByteString
-memberURL tid = baseURL <> (pack . show $ tid)
 
-initReq = defaultRequest
-    { host = defaultHost
-    , port = defaultPort
+-- TODO: URIは環境変数から取ってくる
+baseURL = "http://localhost:3000/todos" :: JSS.JSString
+memberURL :: TodoID -> JSS.JSString
+memberURL tid = baseURL <> (JSS.pack . show $ tid)
+
+defaultRequest = Request
+    { reqMethod = GET
+    , reqURI = baseURL
+    , reqLogin = Nothing
+    , reqHeaders = [("Content-Type", "application/json")]
+    , reqWithCredentials = False
+    , reqData = NoData
     }
 
 -- TODO: リクエストが失敗した場合の挙動を実装
 
 fetchAllTodos :: IO [Todo]
-fetchAllTodos = do
-    let req = initReq
-            { method = methodGet
-            , path = baseURL
-            }
-    res <- httpJSON req :: IO (Response [Todo])
-    return $ getResponseBody res
+fetchAllTodos = httpJSON defaultRequest
 
 fetchTodo :: TodoID -> IO Todo
 fetchTodo tid = do
-    let req = initReq
-            { method = methodGet
-            , path = memberURL tid
+    let req = defaultRequest
+            { reqURI = memberURL tid
             }
-    res <- httpJSON req :: IO (Response Todo)
-    return $ getResponseBody res
+    httpJSON req
 
 createTodo :: Todo' -> IO Todo
 createTodo td' = do
-    let req = initReq
-            { method = methodPost
-            , path = baseURL
-            , requestBody = RequestBodyLBS $ encode td'
-            , requestHeaders = [(hContentType, "application/json")]
+    let req = defaultRequest
+            { reqMethod = POST
+            , reqData = NoData -- 修正
             }
-    res <- httpJSON req :: IO (Response TodoID)
-    return $ makeTodo (getResponseBody res) td'
+    httpJSON req
 
 updateTodo :: Todo -> IO ()
 updateTodo td = do
-    let req = initReq
-            { method = methodPut
-            , path = memberURL $ id td
-            , requestBody = RequestBodyLBS $ encode td
-            , requestHeaders = [(hContentType, "application/json")]
+    let req = defaultRequest
+            { reqMethod = PUT
+            , reqURI = memberURL $ id td
+            , reqData = NoData
             }
     -- このあたりの実装は一旦保留
-    httpJSON req :: IO (Response Int)
+    httpJSON req :: IO Todo
     return ()
 
 deleteTodo :: TodoID -> IO ()
 deleteTodo tid = do
-    let req = initReq
-            { method = methodDelete
-            , path = memberURL tid
+    let req = defaultRequest
+            { reqMethod = DELETE
+            , reqURI = memberURL tid
             }
-    httpJSON req :: IO (Response Integer)
-    return ()
+    httpJSON req
+
+httpJSON :: FromJSON a => Request -> IO a
+httpJSON req = do
+    res <- xhrByteString req
+    let Just bs = contents res
+        Just a  = decode $ LBS.fromStrict bs
+    return a

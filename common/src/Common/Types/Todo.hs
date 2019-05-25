@@ -17,12 +17,12 @@ data Todo = Todo
     { id       :: !TodoID
     , task     :: !Text
     , deadline :: !Day
-    } deriving (Generic)
+    } deriving (Generic, Eq)
 
 data Todo' = Todo'
     { pTask     :: !Text
     , pDeadline :: !Day
-    } deriving (Generic)
+    } deriving (Generic, Eq)
 
 instance ToJSON Todo
 instance FromJSON Todo

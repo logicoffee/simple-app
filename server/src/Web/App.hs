@@ -1,13 +1,16 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Web.App where
 
-import           Network.HTTP.Types.Status (status404)
+import           Network.HTTP.Types.Status (status200, status404)
 import           Web.Action.Before
 import           Web.Action.Todo
 import           Web.Scotty
 
 app :: ScottyM ()
 app = do
+    options "/todos" optionsAction
+    options "/todos/:todoId" optionsAction
+
     get "/todos" fetchAllTodos
     post "/todos" createTodo
 
@@ -19,3 +22,7 @@ app = do
 
     notFound $ status status404
 
+optionsAction :: ActionM ()
+optionsAction = do
+    addDefaultHeaders
+    status status200

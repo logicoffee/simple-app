@@ -9,20 +9,27 @@ data Model = Model
     , draftCreate :: Todo'  -- 新規作成中のTodo
     } deriving(Eq)
 
-data Action = FetchTodos
+data Action = Init
+            | FetchTodos
             | DisplayAll [Todo]
             | UpdateDraftCreate Todo'
             | CreateTodo
             | FinishTodo TodoID
 
 updateModel :: Action -> Model -> Effect Action Model
+updateModel Init model = model `batchEff`
+    [ fmap UpdateDraftCreate defaultTodo'
+    , return FetchTodos
+    ]
 updateModel FetchTodos model              = model <# fmap DisplayAll fetchAllTodos
 updateModel (DisplayAll tds) model        = noEff $ model { todos = tds }
 updateModel (UpdateDraftCreate td') model = noEff $ model { draftCreate = td' }
 updateModel CreateTodo model = model <# do
-    td <- createTodo $ draftCreate model
+    mbtd <- createTodo $ draftCreate model
     let tds = todos model
-    return $ DisplayAll $ td : tds
+    case mbtd of
+        Nothing -> return $ DisplayAll tds
+        Just td -> return $ DisplayAll $ td : tds
 updateModel (FinishTodo tid) model = model <# do
     deleteTodo tid
     return FetchTodos

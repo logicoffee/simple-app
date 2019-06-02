@@ -56,3 +56,4 @@ addDefaultHeaders = do
     addHeader "Access-Control-Allow-Origin" "*"
     addHeader "Access-Control-Allow-Methods" "GET, POST, PUT, DELETE, OPTIONS"
     addHeader "Access-Control-Allow-Headers" "Content-Type"
+    addHeader "Content-Type" "application/json"

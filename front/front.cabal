@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: ef221872bce81eb86cd604846ed486d4f7496a55cb4ab107c875a93ef5ded351
+-- hash: 6314fa8d3e97bac391b5e8831b114f783e584c049e8531ec4cca586775ae8dd5
 
 name:           front
 version:        0.1.0.0
@@ -25,6 +25,7 @@ library
   exposed-modules:
       API
       Effect
+      View
   other-modules:
       Paths_front
   hs-source-dirs:
